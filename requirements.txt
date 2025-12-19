@@ -1,4 +1,3 @@
-import socket, json, threading, time, sys
-import multiprocessing as mp
-import struct, ssl, random
-from urllib.parse import urlparse
+requests>=2.30.0
+flask==2.3.2
+numpy
